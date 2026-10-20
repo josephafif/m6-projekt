@@ -44,6 +44,7 @@ while aktuell_dag <= antal_dagar:
     print("=" * 34)
 
     print(f"{TerminalFarger.GRON}Pengar på kontot:{TerminalFarger.NORMAL} {pengar} kr")
+    print(f"{TerminalFarger.GUL}Aktievärde:{TerminalFarger.NORMAL} {antal_aktier * aktiepris} kr")
     print(f"{TerminalFarger.BLA}Antal aktier:{TerminalFarger.NORMAL} {antal_aktier}")
     print(f"{TerminalFarger.GUL}Aktiepris:{TerminalFarger.NORMAL} {aktiepris} kr")
 
