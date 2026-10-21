@@ -2,6 +2,7 @@ import random
 
 from portfolio import buy_shares, sell_shares, calculate_total_value
 from save_load import save_game, load_game
+from market.py import updatePrices
 
 
 class TerminalFarger:
@@ -60,7 +61,7 @@ while aktuell_dag <= antal_dagar:
     val = input(f"{TerminalFarger.TURKOS}Välj ett alternativ: {TerminalFarger.NORMAL}")
 
     if val == "1":
-        antal = fraga_om_antal("Hur många aktier vill du köpa? ")
+        antal = fraga_om_antal("Hur många aktier vill du köpa? : ")
         if antal is not None:
             pengar, antal_aktier, meddelande = buy_shares(
                 pengar, antal_aktier, aktiepris, antal
@@ -71,7 +72,7 @@ while aktuell_dag <= antal_dagar:
                 visa_meddelande(meddelande, TerminalFarger.ROD)
 
     elif val == "2":
-        antal = fraga_om_antal("Hur många aktier vill du sälja? ")
+        antal = fraga_om_antal("Hur många aktier vill du sälja? :")
         if antal is not None:
             pengar, antal_aktier, meddelande = sell_shares(
                 pengar, antal_aktier, aktiepris, antal
@@ -106,20 +107,13 @@ while aktuell_dag <= antal_dagar:
             visa_meddelande("Du har nått den sista dagen.", TerminalFarger.GUL)
 
     elif val == "4":
-        totalt_varde = calculate_total_value(pengar, antal_aktier, aktiepris)
-        print()
-        print(f"{TerminalFarger.GRON}Pengar på kontot: {pengar} kr{TerminalFarger.NORMAL}")
-        print(f"{TerminalFarger.BLA}Värdet på dina aktier: {antal_aktier * aktiepris} kr{TerminalFarger.NORMAL}")
-        visa_meddelande(f"Totalt värde: {totalt_varde} kr", TerminalFarger.TITEL + TerminalFarger.FET)
-
-    elif val == "5":
         sparat = save_game(pengar, antal_aktier, aktiepris, aktuell_dag, antal_dagar)
         if sparat:
             visa_meddelande("Spelet har sparats i filen savegame.json.", TerminalFarger.GRON)
         else:
             visa_meddelande("Spelet kunde inte sparas.", TerminalFarger.ROD)
 
-    elif val == "6":
+    elif val == "5":
         sparat_spel = load_game()
         if sparat_spel is None:
             visa_meddelande("Det gick inte att hitta eller läsa ett sparat spel.", TerminalFarger.ROD)
@@ -131,12 +125,12 @@ while aktuell_dag <= antal_dagar:
             antal_dagar = sparat_spel["total_days"]
             visa_meddelande("Det sparade spelet har laddats.", TerminalFarger.GRON)
 
-    elif val == "7":
+    elif val == "6":
         visa_meddelande("Du avslutar spelet.", TerminalFarger.GUL)
         break
 
     else:
-        visa_meddelande("Ogiltigt val. Välj ett alternativ mellan 1 och 7.", TerminalFarger.ROD)
+        visa_meddelande("Ogiltigt val. Välj ett alternativ mellan 1 och 6.", TerminalFarger.ROD)
 
 print("\n" + "=" * 34)
 visa_meddelande("          SPELET ÄR AVSLUTAT", TerminalFarger.TITEL + TerminalFarger.FET)
