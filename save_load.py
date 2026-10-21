@@ -12,6 +12,22 @@ def save_game(money, shares, stock_price, current_day, total_days):
         "current_day": current_day,
         "total_days": total_days
     }
+    #Spara i filen på nåogt sätt
+    theGameStocks = {
+        "investorPlus" : {
+            "price" : 44.9,
+            "volatility" : 0.5
+        },
+        "reliableBank" : {
+            "price" : 120,
+            "volatility" : 0.1
+        },
+        "rocketStock" : {
+            "price" : 9999,
+            "volatility" : 0.9
+        }
+    }
+
 
     try:
         with open(SAVE_FILE, "w", encoding="utf-8") as file:
@@ -26,7 +42,6 @@ def load_game():
     try:
         with open(SAVE_FILE, "r", encoding="utf-8") as file:
             game_data = json.load(file)
-
         money = int(game_data["money"])
         shares = int(game_data["shares"])
         stock_price = int(game_data["stock_price"])

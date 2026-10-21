@@ -2,7 +2,7 @@ import random
 
 from portfolio import buy_shares, sell_shares, calculate_total_value
 from save_load import save_game, load_game
-from market.py import updatePrices
+from market import updatePrices
 
 
 class TerminalFarger:
@@ -85,7 +85,8 @@ while aktuell_dag <= antal_dagar:
     elif val == "3":
         if aktuell_dag < antal_dagar:
             # TODO: Ska tas bort när market.py är färdig
-            prisandring = random.randint(-10, 10)
+            # Måste fixa så det finns en dict med rätt värden
+            prisandring = updatePrices(stocks)
             aktiepris = aktiepris + prisandring
 
             if aktiepris < 1:
