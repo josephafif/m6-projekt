@@ -1,6 +1,6 @@
 import random
 
-from portfolio import buy_shares, sell_shares, calculate_total_value
+from portfolio import buy_shares, sell_shares, calculate_stock_value, calculate_total_value
 from save_load import save_game, load_game
 from market import updatePrices, theGameStocks
 
@@ -32,9 +32,20 @@ def fraga_om_antal(text):
         return None
 
 
+def valj_aktie():
+    """Låter spelaren välja en aktie med dess nummer och returnerar aktiens namn"""
+    aktienamn = list(theGameStocks)
+    nummer = fraga_om_antal("Vilken aktie (nummer)? : ")
+    if nummer is None:
+        return None
+    if nummer < 1 or nummer > len(aktienamn):
+        visa_meddelande(f"Välj ett nummer mellan 1 och {len(aktienamn)}.", TerminalFarger.ROD)
+        return None
+    return aktienamn[nummer - 1]
+
+
 pengar = 1000
-antal_aktier = 0
-aktiepris = 100
+antal_aktier = {namn: 0 for namn in theGameStocks}
 aktuell_dag = 1
 antal_dagar = 365
 
@@ -45,9 +56,10 @@ while aktuell_dag <= antal_dagar:
     print("=" * 34)
 
     print(f"{TerminalFarger.GRON}Pengar på kontot:{TerminalFarger.NORMAL} {pengar} kr")
-    print(f"{TerminalFarger.GUL}Aktievärde:{TerminalFarger.NORMAL} {antal_aktier * aktiepris} kr")
-    print(f"{TerminalFarger.BLA}Antal aktier:{TerminalFarger.NORMAL} {antal_aktier}")
-    print(f"{TerminalFarger.GUL}Aktiepris:{TerminalFarger.NORMAL} {aktiepris} kr")
+    print(f"{TerminalFarger.GUL}Aktievärde:{TerminalFarger.NORMAL} {calculate_stock_value(antal_aktier, theGameStocks)} kr")
+    for nummer, namn in enumerate(theGameStocks, start=1):
+        print(f"{TerminalFarger.TURKOS}{nummer}.{TerminalFarger.NORMAL} {namn} {theGameStocks[namn]['price']} kr"
+              f"   {TerminalFarger.BLA}Du äger:{TerminalFarger.NORMAL} {antal_aktier[namn]} st")
 
     print(f"\n{TerminalFarger.FET}Vad vill du göra?{TerminalFarger.NORMAL}")
     print(f"{TerminalFarger.TURKOS}1.{TerminalFarger.NORMAL} Köpa aktier")
@@ -60,10 +72,13 @@ while aktuell_dag <= antal_dagar:
     val = input(f"{TerminalFarger.TURKOS}Välj ett alternativ: {TerminalFarger.NORMAL}")
 
     if val == "1":
-        antal = fraga_om_antal("Hur många aktier vill du köpa? : ")
+        aktie = valj_aktie()
+        antal = None
+        if aktie is not None:
+            antal = fraga_om_antal(f"Hur många {aktie} vill du köpa? : ")
         if antal is not None:
-            pengar, antal_aktier, meddelande = buy_shares(
-                pengar, antal_aktier, aktiepris, antal
+            pengar, antal_aktier[aktie], meddelande = buy_shares(
+                pengar, antal_aktier[aktie], theGameStocks[aktie]["price"], antal
             )
             if meddelande.startswith("Du köpte"):
                 visa_meddelande(meddelande, TerminalFarger.GRON)
@@ -71,10 +86,13 @@ while aktuell_dag <= antal_dagar:
                 visa_meddelande(meddelande, TerminalFarger.ROD)
 
     elif val == "2":
-        antal = fraga_om_antal("Hur många aktier vill du sälja? :")
+        aktie = valj_aktie()
+        antal = None
+        if aktie is not None:
+            antal = fraga_om_antal(f"Hur många {aktie} vill du sälja? : ")
         if antal is not None:
-            pengar, antal_aktier, meddelande = sell_shares(
-                pengar, antal_aktier, aktiepris, antal
+            pengar, antal_aktier[aktie], meddelande = sell_shares(
+                pengar, antal_aktier[aktie], theGameStocks[aktie]["price"], antal
             )
             if meddelande.startswith("Du sålde"):
                 visa_meddelande(meddelande, TerminalFarger.GRON)
@@ -83,14 +101,11 @@ while aktuell_dag <= antal_dagar:
 
     elif val == "3":
         if aktuell_dag < antal_dagar:
-            # TODO: Ska tas bort när market.py är färdig
-            # Måste fixa så det finns en dict med rätt värden
-            sparat_spel = load_game()
-            prisandring = updatePrices(sparat_spel["stocks"])
-            save_game(pengar, antal_aktier, aktiepris, aktuell_dag, antal_dagar, sparat_spel["stocks"])
+            updatePrices(theGameStocks)
 
-            if aktiepris < 1:
-                aktiepris = 1
+            for namn in theGameStocks:
+                if theGameStocks[namn]["price"] < 1:
+                    theGameStocks[namn]["price"] = 1
 
             aktuell_dag = aktuell_dag + 1
             visa_meddelande("Du går vidare till nästa dag.", TerminalFarger.TURKOS)
@@ -100,7 +115,7 @@ while aktuell_dag <= antal_dagar:
             visa_meddelande("Du har nått den sista dagen.", TerminalFarger.GUL)
 
     elif val == "4":
-        sparat = save_game(pengar, antal_aktier, aktiepris, aktuell_dag, antal_dagar, theGameStocks)
+        sparat = save_game(pengar, antal_aktier, aktuell_dag, antal_dagar, theGameStocks)
         if sparat:
             visa_meddelande("Spelet har sparats i filen savegame.json.", TerminalFarger.GRON)
         else:
@@ -113,7 +128,7 @@ while aktuell_dag <= antal_dagar:
         else:
             pengar = sparat_spel["money"]
             antal_aktier = sparat_spel["shares"]
-            aktiepris = sparat_spel["stock_price"]
+            theGameStocks.update(sparat_spel["stocks"])
             aktuell_dag = sparat_spel["current_day"]
             antal_dagar = sparat_spel["total_days"]
             visa_meddelande("Det sparade spelet har laddats.", TerminalFarger.GRON)
@@ -129,7 +144,7 @@ print("\n" + "=" * 34)
 visa_meddelande("          SPELET ÄR AVSLUTAT", TerminalFarger.TITEL + TerminalFarger.FET)
 print("=" * 34)
 print(f"{TerminalFarger.GRON}Pengar på kontot: {pengar} kr{TerminalFarger.NORMAL}")
-print(f"{TerminalFarger.BLA}Antal aktier: {antal_aktier}{TerminalFarger.NORMAL}")
-print(f"{TerminalFarger.GUL}Aktiepris: {aktiepris} kr{TerminalFarger.NORMAL}")
-slutvarde = calculate_total_value(pengar, antal_aktier, aktiepris)
+for namn in theGameStocks:
+    print(f"{TerminalFarger.BLA}{namn}: {antal_aktier[namn]} st à {theGameStocks[namn]['price']} kr{TerminalFarger.NORMAL}")
+slutvarde = calculate_total_value(pengar, antal_aktier, theGameStocks)
 visa_meddelande(f"Totalt värde: {slutvarde} kr", TerminalFarger.TITEL + TerminalFarger.FET)

@@ -3,12 +3,12 @@ def buy_shares(money, shares, stock_price, amount):
     if amount <= 0:
         return money, shares, "Du måste köpa minst 1 aktie."
 
-    cost = stock_price * amount
+    cost = round(stock_price * amount, 2)
 
     if cost > money:
         return money, shares, "Du har inte tillräckligt med pengar för köpet."
 
-    money = money - cost
+    money = round(money - cost, 2)
     shares = shares + amount
 
     message = "Du köpte " + str(amount) + " aktie/aktier för " + str(cost) + " kr."
@@ -23,15 +23,23 @@ def sell_shares(money, shares, stock_price, amount):
     if amount > shares:
         return money, shares, "Du äger inte så många aktier."
 
-    income = stock_price * amount
+    income = round(stock_price * amount, 2)
 
-    money = money + income
+    money = round(money + income, 2)
     shares = shares - amount
 
     message = "Du sålde " + str(amount) + " aktie/aktier för " + str(income) + " kr."
     return money, shares, message
 
 
-def calculate_total_value(money, shares, stock_price):
+def calculate_stock_value(shares, stocks):
+    """Räknar ut värdet av alla aktier spelaren äger"""
+    value = 0
+    for name in shares:
+        value = value + shares[name] * stocks[name]["price"]
+    return round(value, 2)
+
+
+def calculate_total_value(money, shares, stocks):
     """Räknar ut pengar på kontot plus värdet av aktierna"""
-    return money + shares * stock_price
+    return round(money + calculate_stock_value(shares, stocks), 2)
