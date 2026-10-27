@@ -1,0 +1,21 @@
+{
+    "money": 1000,
+    "shares": 0,
+    "stock_price": 100,
+    "current_day": 1,
+    "total_days": 365,
+    "stocks": {
+        "investorPlus": {
+            "price": 44.9,
+            "volatility": 0.5
+        },
+        "reliableBank": {
+            "price": 120,
+            "volatility": 0.1
+        },
+        "rocketStock": {
+            "price": 9999,
+            "volatility": 0.9
+        }
+    }
+}

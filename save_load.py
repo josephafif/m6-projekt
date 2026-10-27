@@ -3,7 +3,7 @@ import json
 SAVE_FILE = "savegame.json"
 
 
-def save_game(money, shares, stock_price, current_day, total_days):
+def save_game(money, shares, stock_price, current_day, total_days, stocks):
     """Sparar spelets variabler i en JSON fil"""
     game_data = {
         "money": money,
@@ -12,22 +12,7 @@ def save_game(money, shares, stock_price, current_day, total_days):
         "current_day": current_day,
         "total_days": total_days
     }
-    #Spara i filen på nåogt sätt
-    theGameStocks = {
-        "investorPlus" : {
-            "price" : 44.9,
-            "volatility" : 0.5
-        },
-        "reliableBank" : {
-            "price" : 120,
-            "volatility" : 0.1
-        },
-        "rocketStock" : {
-            "price" : 9999,
-            "volatility" : 0.9
-        }
-    }
-
+    game_data["stocks"] = stocks
 
     try:
         with open(SAVE_FILE, "w", encoding="utf-8") as file:
@@ -35,7 +20,6 @@ def save_game(money, shares, stock_price, current_day, total_days):
         return True
     except OSError:
         return False
-
 
 def load_game():
     """Laddar in en sparad JSON fil"""
@@ -47,6 +31,7 @@ def load_game():
         stock_price = int(game_data["stock_price"])
         current_day = int(game_data["current_day"])
         total_days = int(game_data["total_days"])
+        stocks = game_data["stocks"]
 
         if money < 0 or shares < 0 or stock_price < 1:
             return None
@@ -58,7 +43,8 @@ def load_game():
             "shares": shares,
             "stock_price": stock_price,
             "current_day": current_day,
-            "total_days": total_days
+            "total_days": total_days,
+            "stocks": stocks
         }
 
     except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):

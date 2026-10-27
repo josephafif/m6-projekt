@@ -2,7 +2,7 @@ import random
 
 from portfolio import buy_shares, sell_shares, calculate_total_value
 from save_load import save_game, load_game
-from market import updatePrices
+from market import updatePrices, theGameStocks
 
 
 class TerminalFarger:
@@ -53,10 +53,9 @@ while aktuell_dag <= antal_dagar:
     print(f"{TerminalFarger.TURKOS}1.{TerminalFarger.NORMAL} Köpa aktier")
     print(f"{TerminalFarger.TURKOS}2.{TerminalFarger.NORMAL} Sälja aktier")
     print(f"{TerminalFarger.TURKOS}3.{TerminalFarger.NORMAL} Gå till nästa dag")
-    print(f"{TerminalFarger.TURKOS}4.{TerminalFarger.NORMAL} Visa totalt värde")
-    print(f"{TerminalFarger.TURKOS}5.{TerminalFarger.NORMAL} Spara spelet")
-    print(f"{TerminalFarger.TURKOS}6.{TerminalFarger.NORMAL} Ladda sparat spel")
-    print(f"{TerminalFarger.TURKOS}7.{TerminalFarger.NORMAL} Avsluta spelet")
+    print(f"{TerminalFarger.TURKOS}4.{TerminalFarger.NORMAL} Spara spelet")
+    print(f"{TerminalFarger.TURKOS}5.{TerminalFarger.NORMAL} Ladda sparat spel")
+    print(f"{TerminalFarger.TURKOS}6.{TerminalFarger.NORMAL} Avsluta spelet")
 
     val = input(f"{TerminalFarger.TURKOS}Välj ett alternativ: {TerminalFarger.NORMAL}")
 
@@ -108,7 +107,7 @@ while aktuell_dag <= antal_dagar:
             visa_meddelande("Du har nått den sista dagen.", TerminalFarger.GUL)
 
     elif val == "4":
-        sparat = save_game(pengar, antal_aktier, aktiepris, aktuell_dag, antal_dagar)
+        sparat = save_game(pengar, antal_aktier, aktiepris, aktuell_dag, antal_dagar, theGameStocks)
         if sparat:
             visa_meddelande("Spelet har sparats i filen savegame.json.", TerminalFarger.GRON)
         else:
