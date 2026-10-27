@@ -6,15 +6,15 @@
     "total_days": 365,
     "stocks": {
         "investorPlus": {
-            "price": 44.9,
+            "price": -20900950.0,
             "volatility": 0.5
         },
         "reliableBank": {
-            "price": 120,
+            "price": 47304.0,
             "volatility": 0.1
         },
         "rocketStock": {
-            "price": 9999,
+            "price": -86165288713.38962,
             "volatility": 0.9
         }
     }

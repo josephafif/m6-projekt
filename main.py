@@ -85,23 +85,16 @@ while aktuell_dag <= antal_dagar:
         if aktuell_dag < antal_dagar:
             # TODO: Ska tas bort när market.py är färdig
             # Måste fixa så det finns en dict med rätt värden
-            prisandring = updatePrices(stocks)
-            aktiepris = aktiepris + prisandring
+            sparat_spel = load_game()
+            prisandring = updatePrices(sparat_spel["stocks"])
+            save_game(pengar, antal_aktier, aktiepris, aktuell_dag, antal_dagar, sparat_spel["stocks"])
 
             if aktiepris < 1:
                 aktiepris = 1
 
             aktuell_dag = aktuell_dag + 1
             visa_meddelande("Du går vidare till nästa dag.", TerminalFarger.TURKOS)
-
-            if prisandring > 0:
-                farg = TerminalFarger.GRON
-            elif prisandring < 0:
-                farg = TerminalFarger.ROD
-            else:
-                farg = TerminalFarger.GUL
-
-            visa_meddelande(f"Aktiepriset ändrades med {prisandring:+} kr.", farg)
+            
         else:
             aktuell_dag = antal_dagar + 1
             visa_meddelande("Du har nått den sista dagen.", TerminalFarger.GUL)
