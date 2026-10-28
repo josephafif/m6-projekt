@@ -5,7 +5,7 @@
 [] Logiken för köpa och sälj av olika aktier
 
 ### market.py
-[] Prisändringslokigen ger rimligare aktievärden
+[x] Prisändringslokigen ger rimligare aktievärden
 
 ### UI i main.py
 Aktie 1 [Pris] kr   +45 kr

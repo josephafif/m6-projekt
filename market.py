@@ -19,7 +19,7 @@ theGameStocks = {
 
 def updatePrices(stocks):
     for x in stocks:
-        stocks[x]["price"] = (random.randint(-100,100) * stocks[x]["price"]) * stocks[x]["volatility"]
+        stocks[x]["price"] = stocks[x]["price"] + random.randint(-100,100) * stocks[x]["volatility"]
     newStockList = stocks
     return newStockList
 
